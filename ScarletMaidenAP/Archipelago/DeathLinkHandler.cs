@@ -43,9 +43,9 @@ namespace BepInEx5ArchipelagoPluginTemplate.templates.Archipelago
         private void Scarlet_TakeDamage_int_CharacterMoveDirection(On.Scarlet.orig_TakeDamage_int_CharacterMoveDirection orig, Scarlet self, int damage, CharacterMoveDirection dDirection)
         {
             if (self.isDead) return;
-            var origHealth = self.health;
+            //var origHealth = self.health;
             orig(self, damage, dDirection);
-            self.health = origHealth; // lol, lmao even
+            //self.health = origHealth; // lol, lmao even
             if (self.isDead)
             {
                 SendDeathLink();
