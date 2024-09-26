@@ -111,7 +111,7 @@ namespace ScarletMaidenAP.Managers
                     {
                         Destroy(self.signPost);
                     }
-                    else
+                    else if (self.signPost != null)
                     {
                         self.signPost.gameObject.GetComponent<SpriteRenderer>().flipX = true;
                         self.signPost.gameObject.transform.position -= new Vector3(8, 0, 0);
