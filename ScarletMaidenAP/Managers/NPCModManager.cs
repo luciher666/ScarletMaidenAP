@@ -89,6 +89,7 @@ namespace ScarletMaidenAP.Managers
         public static int BlacksmithLevelSent = 1; // MUST START AT 1!
         public static int BlacksmithMaxLevel = 12;
         public static int BlacksmithXP = 0;
+        public static bool BlacksmithSignHints = false;
 
         /// <summary>
         /// Reimplementation of Blacksmith.Start(), separating out logic for sent/received. Allows Blacksmith to be rescued even if already in main hub.
@@ -106,7 +107,15 @@ namespace ScarletMaidenAP.Managers
                 Destroy(self.cage.gameObject);
                 if (BlacksmithLevelReceived > 0)
                 {
-                    Destroy(self.signPost);
+                    if (!BlacksmithSignHints)
+                    {
+                        Destroy(self.signPost);
+                    }
+                    else
+                    {
+                        self.signPost.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+                        self.signPost.gameObject.transform.position -= new Vector3(8, 0, 0);
+                    }
                     self.blacksmithState.state = NPCStateBlacksmith.State.Merchant;
                 }
                 else
