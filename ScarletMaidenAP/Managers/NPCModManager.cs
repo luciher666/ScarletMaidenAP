@@ -75,8 +75,8 @@ namespace ScarletMaidenAP.Managers
 
         #region Blacksmith
 
-        public static int BlacksmithLevelReceived = 500;
-        public static bool BlacksmithSent = true;
+        public static int BlacksmithLevelReceived = 0;
+        public static bool BlacksmithSent = false;
         public static int BlacksmithLevelSent = 1; // MUST START AT 1!
         public static int BlacksmithXP = 0;
 
@@ -195,8 +195,8 @@ namespace ScarletMaidenAP.Managers
 
         #region Roman
 
-        public static int RomanLevelReceived = 500;
-        public static bool RomanSent = true;
+        public static int RomanLevelReceived = 0;
+        public static bool RomanSent = false;
         public static int RomanLevelSent = 1; // MUST START AT 1!
         public static int RomanXP = 0;
 
@@ -264,8 +264,8 @@ namespace ScarletMaidenAP.Managers
 
         #region Faelina
 
-        public static int FaelinaLevelReceived = 500;
-        public static bool FaelinaSent = true;
+        public static int FaelinaLevelReceived = 0;
+        public static bool FaelinaSent = false;
         public static int FaelinaLevelSent = 1; // MUST START AT 1!
         public static int FaelinaXP = 0;
 

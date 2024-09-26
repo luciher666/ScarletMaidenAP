@@ -12,7 +12,7 @@ namespace ScarletMaidenAP.Archipelago
 {
     public class ArchipelagoClient
     {
-        public const string APVersion = "0.4.4";
+        public const string APVersion = "0.5.0";
         private const string Game = "Scarlet Maiden";
 
         public static bool Authenticated;
