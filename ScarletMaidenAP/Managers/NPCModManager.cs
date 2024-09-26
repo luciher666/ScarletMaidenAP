@@ -24,9 +24,19 @@ namespace ScarletMaidenAP.Managers
             // Roman
             On.Roman.Start += Roman_Start;
             On.Roman.GetLevel += Roman_GetLevel;
+            On.Roman.GetMaxLevel += Roman_GetMaxLevel;
+            On.Roman.GetMaxXPInCurrentLevel += Roman_GetMaxXPInCurrentLevel;
+            On.Roman.GetXP += Roman_GetXP;
+            On.Roman.PurchaseXP += Roman_PurchaseXP;
+            On.LootManager.DropLootForRoman += LootManager_DropLootForRoman;
             // Faelina
             On.Faelina.Start += Faelina_Start;
             On.Faelina.GetLevel += Faelina_GetLevel;
+            On.Faelina.GetMaxLevel += Faelina_GetMaxLevel;
+            On.Faelina.GetMaxXPInCurrentLevel += Faelina_GetMaxXPInCurrentLevel;
+            On.Faelina.GetXP += Faelina_GetXP;
+            On.Faelina.PurchaseXP += Faelina_PurchaseXP;
+            On.LootManager.DropLootForFaelina += LootManager_DropLootForFaelina;
             // Candy
             On.Candy.Start += Candy_Start;
             On.Candy.GetNPCState += Candy_GetNPCState;
@@ -77,6 +87,7 @@ namespace ScarletMaidenAP.Managers
         public static int BlacksmithLevelReceived = 0;
         public static bool BlacksmithSent = false;
         public static int BlacksmithLevelSent = 1; // MUST START AT 1!
+        public static int BlacksmithMaxLevel = 12;
         public static int BlacksmithXP = 0;
 
         /// <summary>
@@ -128,7 +139,6 @@ namespace ScarletMaidenAP.Managers
         private int Blacksmith_GetLevel(On.Blacksmith.orig_GetLevel orig, Blacksmith self)
         {
             var caller = (new System.Diagnostics.StackTrace()).GetFrame(2).GetMethod().Name;
-            //Plugin.BepinLogger.LogWarning($"Smith level checked. Caller: {caller}");
             return caller.Contains("DropLoot") ? BlacksmithLevelReceived : BlacksmithLevelSent;
         }
 
@@ -207,17 +217,8 @@ namespace ScarletMaidenAP.Managers
         public static int RomanLevelReceived = 0;
         public static bool RomanSent = false;
         public static int RomanLevelSent = 1; // MUST START AT 1!
+        public static int RomanMaxLevel = 12;
         public static int RomanXP = 0;
-
-        /// <summary>
-        /// Sets the level to the current received and clear the loot cache
-        /// </summary>
-        private void NPCStateRoman_Init(On.NPCStateRoman.orig_Init orig, NPCStateRoman self)
-        {
-            self.level = RomanLevelReceived;
-            self.lootCache = null;
-            orig(self);
-        }
 
         /// <summary>
         /// Reimplementation of Roman.Start(), separating out logic for sent/received. Allows Roman to be rescued even if already in main hub.
@@ -262,11 +263,80 @@ namespace ScarletMaidenAP.Managers
             }
         }
 
+        /// <summary>
+        /// Returns the received level for the purpose of loot dropping, returns the sent level otherwise.
+        /// </summary>
         private int Roman_GetLevel(On.Roman.orig_GetLevel orig, Roman self)
         {
             var caller = (new System.Diagnostics.StackTrace()).GetFrame(2).GetMethod().Name;
-            Plugin.BepinLogger.LogWarning($"Roman level checked. Caller: {caller}");
             return caller.Contains("DropLoot") ? RomanLevelReceived : RomanLevelSent;
+        }
+
+        /// <summary>
+        /// Returns the max level available for the Roman. Game default is 12 but should theoretically support any positive int up to int.MaxValue / 500
+        ///
+        /// Prob a bad idea to allow numbers that high anyway so prob gonna set a more reasonable limit in-APWorld
+        /// </summary>
+        private int Roman_GetMaxLevel(On.Roman.orig_GetMaxLevel orig, Roman self)
+        {
+            return RomanMaxLevel;
+        }
+
+        /// <summary>
+        /// Matches vanilla but ensures that the Sent level is used for calculation
+        /// </summary>
+        private int Roman_GetMaxXPInCurrentLevel(On.Roman.orig_GetMaxXPInCurrentLevel orig, Roman self)
+        {
+            return NPCManager.instance.GetMerchantMaxXPInLevel(RomanLevelSent);
+        }
+
+        /// <summary>
+        /// Changes XP purchasing to properly use Sent Level and AP XP
+        /// </summary>
+        private bool Roman_PurchaseXP(On.Roman.orig_PurchaseXP orig, Roman self, int xpAmount)
+        {
+            if (RomanLevelSent >= self.GetMaxLevel())
+            {
+                return false;
+            }
+            int totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
+            if (self.scarlet.sin - totalPriceForXp < 0)
+                return false;
+            self.scarlet.ModifySin(-totalPriceForXp);
+            int merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(RomanLevelSent);
+            int num1 = RomanXP + xpAmount;
+            int num2 = num1 - merchantMaxXpInLevel;
+            if (num2 >= 0)
+            {
+                ++RomanLevelSent; // TODO: Add AP Send
+                StatsManager.instance.OnNPCLevelUp(NPC.Roman, RomanLevelSent);
+                RomanXP = num2;
+                self.npcState.lootCache = null;
+                AudioManager.instance.PlaySFX("UI/skill_level_up");
+                self.Invoke("DropLootWithSounds", 1f);
+            }
+            else
+            {
+                RomanXP = num1;
+                AudioManager.instance.PlaySFX("NPC/xp_increased1");
+            }
+            return true;
+        }
+
+        private int Roman_GetXP(On.Roman.orig_GetXP orig, Roman self)
+        {
+            return RomanXP;
+        }
+
+        /// <summary>
+        /// Ensures that the loot that drops matches up with received Roman level.
+        /// </summary>
+        private GameObject[] LootManager_DropLootForRoman(On.LootManager.orig_DropLootForRoman orig, LootManager self, IMerchant merchant, int count)
+        {
+            var state = GameManager.instance.GetSaveSlot().GetGameState().romanState;
+            state.level = RomanLevelReceived;
+            state.lootCache = null; // Clear cached loot every time fuck it why not. Otherwise level doesn't properly line up or rerolls don't work.
+            return orig(self, merchant, count);
         }
 
         #endregion
@@ -276,6 +346,7 @@ namespace ScarletMaidenAP.Managers
         public static int FaelinaLevelReceived = 0;
         public static bool FaelinaSent = false;
         public static int FaelinaLevelSent = 1; // MUST START AT 1!
+        public static int FaelinaMaxLevel = 12;
         public static int FaelinaXP = 0;
 
         /// <summary>
@@ -321,11 +392,80 @@ namespace ScarletMaidenAP.Managers
             }
         }
 
+        /// <summary>
+        /// Returns the received level for the purpose of loot dropping, returns the sent level otherwise.
+        /// </summary>
         private int Faelina_GetLevel(On.Faelina.orig_GetLevel orig, Faelina self)
         {
             var caller = (new System.Diagnostics.StackTrace()).GetFrame(2).GetMethod().Name;
-            Plugin.BepinLogger.LogWarning($"Faelina level checked. Caller: {caller}");
             return caller.Contains("DropLoot") ? FaelinaLevelReceived : FaelinaLevelSent;
+        }
+
+        /// <summary>
+        /// Returns the max level available for the Faelina. Game default is 12 but should theoretically support any positive int up to int.MaxValue / 500
+        ///
+        /// Prob a bad idea to allow numbers that high anyway so prob gonna set a more reasonable limit in-APWorld
+        /// </summary>
+        private int Faelina_GetMaxLevel(On.Faelina.orig_GetMaxLevel orig, Faelina self)
+        {
+            return FaelinaMaxLevel;
+        }
+
+        /// <summary>
+        /// Matches vanilla but ensures that the Sent level is used for calculation
+        /// </summary>
+        private int Faelina_GetMaxXPInCurrentLevel(On.Faelina.orig_GetMaxXPInCurrentLevel orig, Faelina self)
+        {
+            return NPCManager.instance.GetMerchantMaxXPInLevel(FaelinaLevelSent);
+        }
+
+        /// <summary>
+        /// Changes XP purchasing to properly use Sent Level and AP XP
+        /// </summary>
+        private bool Faelina_PurchaseXP(On.Faelina.orig_PurchaseXP orig, Faelina self, int xpAmount)
+        {
+            if (FaelinaLevelSent >= self.GetMaxLevel())
+            {
+                return false;
+            }
+            int totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
+            if (self.scarlet.sin - totalPriceForXp < 0)
+                return false;
+            self.scarlet.ModifySin(-totalPriceForXp);
+            int merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(FaelinaLevelSent);
+            int num1 = FaelinaXP + xpAmount;
+            int num2 = num1 - merchantMaxXpInLevel;
+            if (num2 >= 0)
+            {
+                ++FaelinaLevelSent; // TODO: Add AP Send
+                StatsManager.instance.OnNPCLevelUp(NPC.Faelina, FaelinaLevelSent);
+                FaelinaXP = num2;
+                self.npcState.lootCache = null;
+                AudioManager.instance.PlaySFX("UI/skill_level_up");
+                self.Invoke("DropLootWithSounds", 1f);
+            }
+            else
+            {
+                FaelinaXP = num1;
+                AudioManager.instance.PlaySFX("NPC/xp_increased1");
+            }
+            return true;
+        }
+
+        private int Faelina_GetXP(On.Faelina.orig_GetXP orig, Faelina self)
+        {
+            return FaelinaXP;
+        }
+
+        /// <summary>
+        /// Ensures that the loot that drops matches up with received Faelina level.
+        /// </summary>
+        private GameObject[] LootManager_DropLootForFaelina(On.LootManager.orig_DropLootForFaelina orig, LootManager self, IMerchant merchant, int count)
+        {
+            var state = GameManager.instance.GetSaveSlot().GetGameState().romanState;
+            state.level = FaelinaLevelReceived;
+            state.lootCache = null; // Clear cached loot every time fuck it why not. Otherwise level doesn't properly line up or rerolls don't work.
+            return orig(self, merchant, count);
         }
 
         #endregion
