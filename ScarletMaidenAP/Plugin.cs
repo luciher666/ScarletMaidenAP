@@ -36,8 +36,6 @@ namespace ScarletMaidenAP
             APSaveManagerInstance = new APSaveManager();
 
             On.SaveSlot.Save += SaveSlot_Save;
-            //On.NPCStateCandy.Init += NPCStateCandy_Init;
-            //On.BaseNPC.Start += BaseNPC_Start;
             On.Scarlet.Start += Scarlet_Start;
         }
 

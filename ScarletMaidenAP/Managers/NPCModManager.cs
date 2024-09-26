@@ -16,6 +16,7 @@ namespace ScarletMaidenAP.Managers
             // Blacksmith
             On.Blacksmith.Start += Blacksmith_Start;
             On.Blacksmith.GetLevel += Blacksmith_GetLevel;
+            On.Blacksmith.GetMaxLevel += Blacksmith_GetMaxLevel;
             On.Blacksmith.GetMaxXPInCurrentLevel += Blacksmith_GetMaxXPInCurrentLevel;
             On.Blacksmith.GetXP += Blacksmith_GetXP;
             On.Blacksmith.PurchaseXP += Blacksmith_PurchaseXP;
@@ -33,8 +34,6 @@ namespace ScarletMaidenAP.Managers
             On.WarpMenu.UpdateOptions += WarpMenu_UpdateOptions;
             On.GameManager.StartRun += GameManager_StartRun;
         }
-
-
 
         #region Generic
 
@@ -131,6 +130,16 @@ namespace ScarletMaidenAP.Managers
             var caller = (new System.Diagnostics.StackTrace()).GetFrame(2).GetMethod().Name;
             //Plugin.BepinLogger.LogWarning($"Smith level checked. Caller: {caller}");
             return caller.Contains("DropLoot") ? BlacksmithLevelReceived : BlacksmithLevelSent;
+        }
+
+        /// <summary>
+        /// Returns the max level available for the Blacksmith. Game default is 12 but should theoretically support any positive int up to int.MaxValue / 500
+        ///
+        /// Prob a bad idea to allow numbers that high anyway so prob gonna set a more reasonable limit in-APWorld
+        /// </summary>
+        private int Blacksmith_GetMaxLevel(On.Blacksmith.orig_GetMaxLevel orig, Blacksmith self)
+        {
+            return BlacksmithMaxLevel;
         }
 
         /// <summary>
