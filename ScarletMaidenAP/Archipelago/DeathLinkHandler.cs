@@ -1,9 +1,9 @@
-﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
-using BepInEx;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+using BepInEx;
 
-namespace BepInEx5ArchipelagoPluginTemplate.templates.Archipelago
+namespace ScarletMaidenAP.Archipelago
 {
     public class DeathLinkHandler
     {

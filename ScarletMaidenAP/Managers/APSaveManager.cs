@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BepInEx5ArchipelagoPluginTemplate.templates;
-
-namespace ScarletMaidenAP.Managers
+﻿namespace ScarletMaidenAP.Managers
 {
     public class APSaveManager
     {

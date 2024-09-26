@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace BepInEx5ArchipelagoPluginTemplate.templates.Archipelago
+namespace ScarletMaidenAP.Archipelago
 {
     public class ArchipelagoData
     {

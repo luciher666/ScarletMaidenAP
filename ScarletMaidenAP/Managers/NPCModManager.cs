@@ -1,12 +1,9 @@
 ﻿using Rewired;
 using System.Linq;
-using System.Security.Cryptography;
-using BepInEx5ArchipelagoPluginTemplate.templates;
 using UnityEngine;
 using UnityEngine.Localization;
 using static UnityEngine.Object;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 namespace ScarletMaidenAP.Managers
 {

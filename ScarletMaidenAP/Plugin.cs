@@ -1,17 +1,11 @@
-﻿using System.Linq;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
-using BepInEx5ArchipelagoPluginTemplate.templates.Archipelago;
-using BepInEx5ArchipelagoPluginTemplate.templates.Utils;
-using JetBrains.Annotations;
-using UnityEngine;
-using UnityEngine.UI;
-using Rewired;
+using ScarletMaidenAP.Archipelago;
 using ScarletMaidenAP.Managers;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Tables;
+using ScarletMaidenAP.Utils;
+using UnityEngine;
 
-namespace BepInEx5ArchipelagoPluginTemplate.templates
+namespace ScarletMaidenAP
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class Plugin : BaseUnityPlugin
@@ -50,10 +44,12 @@ namespace BepInEx5ArchipelagoPluginTemplate.templates
         private void Scarlet_Start(On.Scarlet.orig_Start orig, Scarlet self)
         {
             PlayerInstance = self;
+#if DEBUG
             self.DEBUG = true;
             self.DEBUG_infiniteHealth = true;
             self.DEBUG_infiniteMana = true;
             self.sin = 999999;
+#endif
             orig(self);
         }
 
