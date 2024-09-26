@@ -6,8 +6,8 @@
 
         public APSaveManager()
         {
-            AP_GameState = new GameState();
-            AP_GameState.Init();
+            //AP_GameState = new GameState();
+            //AP_GameState.Init();
 
             //On.SaveSlot.Load += AP_Load;
             //On.SaveSlot.GetGameState += AP_GetGameState;
