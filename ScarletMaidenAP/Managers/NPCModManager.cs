@@ -64,6 +64,9 @@ namespace ScarletMaidenAP.Managers
                 self.minimapIcon.color = self.featureColor;
         }
 
+        /// <summary>
+        /// Used to determine which NPC should spawn in a dungeon cage. Check if their checks have been sent.
+        /// </summary>
         private bool NPCRescueInfo_GetIsRescued(On.NPCRescueInfo.orig_GetIsRescued orig, NPCRescueInfo self)
         {
             switch (self.npc)
@@ -111,7 +114,7 @@ namespace ScarletMaidenAP.Managers
                     {
                         Destroy(self.signPost);
                     }
-                    else if (self.signPost != null)
+                    else if (self.signPost != null) // Place the sign away from the blacksmith when both should be spawned
                     {
                         self.signPost.gameObject.GetComponent<SpriteRenderer>().flipX = true;
                         self.signPost.gameObject.transform.position -= new Vector3(8, 0, 0);
@@ -471,7 +474,7 @@ namespace ScarletMaidenAP.Managers
         /// </summary>
         private GameObject[] LootManager_DropLootForFaelina(On.LootManager.orig_DropLootForFaelina orig, LootManager self, IMerchant merchant, int count)
         {
-            var state = GameManager.instance.GetSaveSlot().GetGameState().romanState;
+            var state = GameManager.instance.GetSaveSlot().GetGameState().faelinaState;
             state.level = FaelinaLevelReceived;
             state.lootCache = null; // Clear cached loot every time fuck it why not. Otherwise level doesn't properly line up or rerolls don't work.
             return orig(self, merchant, count);

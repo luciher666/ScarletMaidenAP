@@ -18,10 +18,10 @@ namespace ScarletMaidenAP
         private const string APDisplayInfo = $"Archipelago v{ArchipelagoClient.APVersion}";
         public static ManualLogSource BepinLogger;
         public static ArchipelagoClient ArchipelagoClient;
-        public static Scarlet PlayerInstance;
 
         public static NPCModManager NPCManagerInstance;
         public static APSaveManager APSaveManagerInstance;
+        public static ScarletManager ScarletManagerInstance;
 
         private void Awake()
         {
@@ -34,23 +34,10 @@ namespace ScarletMaidenAP
 
             NPCManagerInstance = new NPCModManager();
             APSaveManagerInstance = new APSaveManager();
+            ScarletManagerInstance = new ScarletManager();
 
             On.SaveSlot.Save += SaveSlot_Save;
-            On.Scarlet.Start += Scarlet_Start;
         }
-
-        private void Scarlet_Start(On.Scarlet.orig_Start orig, Scarlet self)
-        {
-            PlayerInstance = self;
-#if DEBUG
-            self.DEBUG = true;
-            self.DEBUG_infiniteHealth = true;
-            self.DEBUG_infiniteMana = true;
-            self.sin = 999999;
-#endif
-            orig(self);
-        }
-
 
         private void SaveSlot_Save(On.SaveSlot.orig_Save orig, SaveSlot self)
         {

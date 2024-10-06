@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using BepInEx;
+using ScarletMaidenAP.Managers;
 
 namespace ScarletMaidenAP.Archipelago
 {
@@ -95,7 +96,7 @@ namespace ScarletMaidenAP.Archipelago
                 var deathLink = deathLinks.Dequeue();
                 var cause = deathLink.Cause.IsNullOrWhiteSpace() ? GetDeathLinkCause(deathLink) : deathLink.Cause;
 
-                Plugin.PlayerInstance.InstaKill(0);
+                ScarletManager.PlayerInstance.InstaKill(0);
                 Plugin.BepinLogger.LogMessage(cause);
             }
             catch (Exception e)
