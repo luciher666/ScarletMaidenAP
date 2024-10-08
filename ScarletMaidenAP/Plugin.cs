@@ -20,8 +20,10 @@ namespace ScarletMaidenAP
         public static ArchipelagoClient ArchipelagoClient;
 
         public static NPCModManager NPCManagerInstance;
+        public static ScarletModManager ScarletManagerInstance;
+        public static GalleryModManager GalleryManagerInstance;
+
         public static APSaveManager APSaveManagerInstance;
-        public static ScarletManager ScarletManagerInstance;
 
         private void Awake()
         {
@@ -33,8 +35,10 @@ namespace ScarletMaidenAP
             ArchipelagoConsole.LogMessage($"{ModDisplayInfo} loaded!");
 
             NPCManagerInstance = new NPCModManager();
+            ScarletManagerInstance = new ScarletModManager();
+            GalleryManagerInstance = new GalleryModManager();
+
             APSaveManagerInstance = new APSaveManager();
-            ScarletManagerInstance = new ScarletManager();
 
             On.SaveSlot.Save += SaveSlot_Save;
         }
@@ -46,6 +50,7 @@ namespace ScarletMaidenAP
 
         private void OnGUI()
         {
+            return;
             // show the mod is currently loaded in the corner
             GUI.Label(new Rect(16, 16, 300, 20), ModDisplayInfo);
             ArchipelagoConsole.OnGUI();

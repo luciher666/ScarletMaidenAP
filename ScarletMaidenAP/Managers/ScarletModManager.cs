@@ -2,11 +2,11 @@
 
 namespace ScarletMaidenAP.Managers
 {
-    public class ScarletManager
+    public class ScarletModManager
     {
         public static Scarlet PlayerInstance;
 
-        public ScarletManager()
+        public ScarletModManager()
         {
             On.Scarlet.Awake += Scarlet_Awake;
             On.Scarlet.Start += Scarlet_Start;
@@ -76,7 +76,7 @@ namespace ScarletMaidenAP.Managers
 
         public UIWeapon GetWeapon(Scarlet self)
         {
-            WeaponType weaponType = DefaultWeapon;
+            var weaponType = DefaultWeapon;
             if (weaponType == WeaponType.Random)
             {
                 weaponType = (WeaponType)Random.Range(0, 4);

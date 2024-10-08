@@ -96,7 +96,7 @@ namespace ScarletMaidenAP.Archipelago
                 var deathLink = deathLinks.Dequeue();
                 var cause = deathLink.Cause.IsNullOrWhiteSpace() ? GetDeathLinkCause(deathLink) : deathLink.Cause;
 
-                ScarletManager.PlayerInstance.InstaKill(0);
+                ScarletModManager.PlayerInstance.InstaKill(0);
                 Plugin.BepinLogger.LogMessage(cause);
             }
             catch (Exception e)

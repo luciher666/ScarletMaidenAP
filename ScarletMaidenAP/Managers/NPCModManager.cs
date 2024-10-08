@@ -1,9 +1,10 @@
-﻿using Rewired;
+﻿using System.Diagnostics;
 using System.Linq;
+using Rewired;
 using UnityEngine;
 using UnityEngine.Localization;
-using static UnityEngine.Object;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Object;
 
 namespace ScarletMaidenAP.Managers
 {
@@ -91,7 +92,7 @@ namespace ScarletMaidenAP.Managers
         public static bool BlacksmithSent = false;
         public static int BlacksmithLevelSent = 1; // MUST START AT 1!
         public static int BlacksmithMaxLevel = 12;
-        public static int BlacksmithXP = 0;
+        public static int BlacksmithXP;
         public static bool BlacksmithSignHints = false;
 
         /// <summary>
@@ -150,7 +151,7 @@ namespace ScarletMaidenAP.Managers
         /// </summary>
         private int Blacksmith_GetLevel(On.Blacksmith.orig_GetLevel orig, Blacksmith self)
         {
-            var caller = (new System.Diagnostics.StackTrace()).GetFrame(2).GetMethod().Name;
+            var caller = (new StackTrace()).GetFrame(2).GetMethod().Name;
             return caller.Contains("DropLoot") ? BlacksmithLevelReceived : BlacksmithLevelSent;
         }
 
@@ -181,13 +182,13 @@ namespace ScarletMaidenAP.Managers
             {
                 return false;
             }
-            int totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
+            var totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
             if (self.scarlet.sin - totalPriceForXp < 0)
                 return false;
             self.scarlet.ModifySin(-totalPriceForXp);
-            int merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(BlacksmithLevelSent);
-            int num1 = BlacksmithXP + xpAmount;
-            int num2 = num1 - merchantMaxXpInLevel;
+            var merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(BlacksmithLevelSent);
+            var num1 = BlacksmithXP + xpAmount;
+            var num2 = num1 - merchantMaxXpInLevel;
             if (num2 >= 0)
             {
                 ++BlacksmithLevelSent; // TODO: Add AP Send
@@ -230,7 +231,7 @@ namespace ScarletMaidenAP.Managers
         public static bool RomanSent = false;
         public static int RomanLevelSent = 1; // MUST START AT 1!
         public static int RomanMaxLevel = 12;
-        public static int RomanXP = 0;
+        public static int RomanXP;
 
         /// <summary>
         /// Reimplementation of Roman.Start(), separating out logic for sent/received. Allows Roman to be rescued even if already in main hub.
@@ -280,7 +281,7 @@ namespace ScarletMaidenAP.Managers
         /// </summary>
         private int Roman_GetLevel(On.Roman.orig_GetLevel orig, Roman self)
         {
-            var caller = (new System.Diagnostics.StackTrace()).GetFrame(2).GetMethod().Name;
+            var caller = (new StackTrace()).GetFrame(2).GetMethod().Name;
             return caller.Contains("DropLoot") ? RomanLevelReceived : RomanLevelSent;
         }
 
@@ -311,13 +312,13 @@ namespace ScarletMaidenAP.Managers
             {
                 return false;
             }
-            int totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
+            var totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
             if (self.scarlet.sin - totalPriceForXp < 0)
                 return false;
             self.scarlet.ModifySin(-totalPriceForXp);
-            int merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(RomanLevelSent);
-            int num1 = RomanXP + xpAmount;
-            int num2 = num1 - merchantMaxXpInLevel;
+            var merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(RomanLevelSent);
+            var num1 = RomanXP + xpAmount;
+            var num2 = num1 - merchantMaxXpInLevel;
             if (num2 >= 0)
             {
                 ++RomanLevelSent; // TODO: Add AP Send
@@ -359,7 +360,7 @@ namespace ScarletMaidenAP.Managers
         public static bool FaelinaSent = false;
         public static int FaelinaLevelSent = 1; // MUST START AT 1!
         public static int FaelinaMaxLevel = 12;
-        public static int FaelinaXP = 0;
+        public static int FaelinaXP;
 
         /// <summary>
         /// Reimplementation of Faelina.Start(), separating out logic for sent/received. Allows Faelina to be rescued even if already in main hub.
@@ -409,7 +410,7 @@ namespace ScarletMaidenAP.Managers
         /// </summary>
         private int Faelina_GetLevel(On.Faelina.orig_GetLevel orig, Faelina self)
         {
-            var caller = (new System.Diagnostics.StackTrace()).GetFrame(2).GetMethod().Name;
+            var caller = (new StackTrace()).GetFrame(2).GetMethod().Name;
             return caller.Contains("DropLoot") ? FaelinaLevelReceived : FaelinaLevelSent;
         }
 
@@ -440,13 +441,13 @@ namespace ScarletMaidenAP.Managers
             {
                 return false;
             }
-            int totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
+            var totalPriceForXp = self.GetTotalPriceForXP(xpAmount);
             if (self.scarlet.sin - totalPriceForXp < 0)
                 return false;
             self.scarlet.ModifySin(-totalPriceForXp);
-            int merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(FaelinaLevelSent);
-            int num1 = FaelinaXP + xpAmount;
-            int num2 = num1 - merchantMaxXpInLevel;
+            var merchantMaxXpInLevel = NPCManager.instance.GetMerchantMaxXPInLevel(FaelinaLevelSent);
+            var num1 = FaelinaXP + xpAmount;
+            var num2 = num1 - merchantMaxXpInLevel;
             if (num2 >= 0)
             {
                 ++FaelinaLevelSent; // TODO: Add AP Send
