@@ -12,7 +12,7 @@ namespace ScarletMaidenAP.Managers
             On.BaseBossMinigame.Die += BaseBossMinigame_Die;
         }
 
-        public int RequiredPumps = 2;
+        public int RequiredPumps = 0;
 
         /// <summary>
         /// Check the required hit count and unlock the gallery asset if applicable.
