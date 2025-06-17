@@ -64,5 +64,5 @@ class NPCRegions: # Vanilla spawn regions. Maybe make these shuffleable at some 
     StonedWizard = [RegionNames.Frozen, RegionNames.Sanctum]
     MagicDragon = [RegionNames.Sanctum]
     MuscleGoddess = [RegionNames.Sanctum]
-    MedicineMan = [RegionNames.Mines, RegionNames.MinesBoss, RegionNames.Library, RegionNames.LibraryBoss, RegionNames.Forest, RegionNames.FrozenBoss, RegionNames.Frozen, RegionNames.ForestBoss, RegionNames.Sanctum]
-    MarvinsManaPump = [RegionNames.Mines, RegionNames.MinesBoss, RegionNames.Library, RegionNames.LibraryBoss, RegionNames.Forest, RegionNames.FrozenBoss, RegionNames.Frozen, RegionNames.ForestBoss, RegionNames.Sanctum]
+    MedicineMan = [RegionNames.Mines, RegionNames.MinesBoss, RegionNames.Library, RegionNames.LibraryBoss, RegionNames.Forest, RegionNames.ForestBoss, RegionNames.Frozen, RegionNames.FrozenBoss, RegionNames.Sanctum]
+    MarvinsManaPump = [RegionNames.Mines, RegionNames.MinesBoss, RegionNames.Library, RegionNames.LibraryBoss, RegionNames.Forest, RegionNames.ForestBoss, RegionNames.Frozen, RegionNames.FrozenBoss, RegionNames.Sanctum]
