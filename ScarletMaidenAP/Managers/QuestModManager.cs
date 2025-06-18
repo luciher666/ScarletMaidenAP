@@ -19,15 +19,26 @@ namespace ScarletMaidenAP.Managers
             On.PauseMenuTabJournal.SetUpQuests += PauseMenuTabJournal_SetUpQuests;
             On.Misty.OnInteract += Misty_OnInteract;
             On.Misty.OnSelection1Selected += Misty_OnSelection1Selected;
+            On.Misty.Reset += Misty_Reset;
             On.LewdDungeonMenu.UpdateOptions += LewdDungeonMenu_UpdateOptions;
             On.LewdDungeonMenu.OnOptionConfirmed += LewdDungeonMenu_OnOptionConfirmed;
         }
 
+        private void Misty_Reset(On.Misty.orig_Reset orig, Misty self)
+        {
+            SavedIndex = null;
+            orig(self);
+        }
+
+        /// <summary>
+        /// Always open the menu, since all quests are always active
+        /// </summary>
         private void Misty_OnSelection1Selected(On.Misty.orig_OnSelection1Selected orig, Misty self)
         {
             self.OpenLewdDungeonMenu();
         }
 
+        public int? SavedIndex;
         /// <summary>
         /// Display all quests in Misty's submenu.
         /// </summary>
@@ -46,7 +57,7 @@ namespace ScarletMaidenAP.Managers
                 self.options.Add(gameObject.GetComponent<Image>());
             }
             self.options.Add(self.leaveOption.GetComponent<Image>());
-            self.SetOptionSelected(0);
+            self.SetOptionSelected(SavedIndex ?? 0);
         }
 
         private void LewdDungeonMenu_OnOptionConfirmed(On.LewdDungeonMenu.orig_OnOptionConfirmed orig, LewdDungeonMenu self)
@@ -59,6 +70,7 @@ namespace ScarletMaidenAP.Managers
             {
                 AudioManager.instance.PlaySFX("UI/ui_confirm");
                 // TODO: Conditional on if you've obtained enough quest items
+                SavedIndex = self.pointerIndex;
                 self.gameObject.SetActive(false);
                 self.misty.activeDialog = self.misty.GetDialogWithID("quest_in_progress");
                 self.misty.hud.npcDialog.ShowDialog(self.misty, self.misty.activeDialog, self.misty.OnDialogCallback);
