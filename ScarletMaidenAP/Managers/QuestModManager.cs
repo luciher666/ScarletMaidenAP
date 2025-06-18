@@ -1,4 +1,6 @@
-﻿using ScarletMaidenAP.Utils;
+﻿using System.Linq;
+using ScarletMaidenAP.Utils;
+using UnityEngine;
 
 namespace ScarletMaidenAP.Managers
 {
@@ -7,8 +9,21 @@ namespace ScarletMaidenAP.Managers
         public QuestModManager()
         {
             On.QuestManager.GetActiveQuest += QuestManager_GetActiveQuest;
+            On.QuestManager.GetActiveQuestState += QuestManager_GetActiveQuestState;
             On.QuestManager.GetIsQuestItemAvailable += QuestManager_GetIsQuestItemAvailable;
             On.PauseMenuTabJournal.SetUpQuests += PauseMenuTabJournal_SetUpQuests;
+        }
+
+        private QuestState QuestManager_GetActiveQuestState(On.QuestManager.orig_GetActiveQuestState orig, QuestManager self)
+        {
+            return ActiveQuest == null
+                ? null
+                : new QuestState
+                {
+                    countItemsCollected = 0, // TODO: Get from multiworld
+                    isCompleted = false,
+                    questID = ActiveQuest.id,
+                };
         }
 
         private void PauseMenuTabJournal_SetUpQuests(On.PauseMenuTabJournal.orig_SetUpQuests orig, PauseMenuTabJournal self)
@@ -37,17 +52,37 @@ namespace ScarletMaidenAP.Managers
 
         private bool QuestManager_GetIsQuestItemAvailable(On.QuestManager.orig_GetIsQuestItemAvailable orig, QuestManager self)
         {
-            return true;
+            ActiveQuest = GetAvailableQuest();
+            Plugin.BepinLogger.LogWarning($"ActiveQuest set: {ActiveQuest?.title.GetLocalizedString() ?? "<Null>"}");
+            return ActiveQuest != null;
+        }
+
+        public Quest ActiveQuest { get; set; }
+
+        public Quest GetAvailableQuest()
+        {
+            var availableQuests = QuestManager.instance.quests.Where(IsQuestAvailable).ToArray();
+            Plugin.BepinLogger.LogWarning($"Possible active quests: {availableQuests.Length}");
+            return availableQuests.Any() ? availableQuests[Random.Range(0, availableQuests.Length)] : null;
+        }
+
+        public bool IsQuestAvailable(Quest quest)
+        {
+            // TODO: Check if all items collected from multiworld
+            return StatsManager.instance.GetRunState().currentDungeonLevel >= quest.minDungeonLevelForItemDrop;
         }
 
         private Quest QuestManager_GetActiveQuest(On.QuestManager.orig_GetActiveQuest orig, QuestManager self)
         {
             var caller = (new System.Diagnostics.StackTrace()).GetFrame(2);
             Plugin.BepinLogger.LogMessage($"Called by {caller}");
-            foreach (var q in self.quests)
+            if (ActiveQuest != null)
             {
-                Plugin.BepinLogger.LogWarning($"{q.title.TableReference.TableCollectionName} - ID:{q.id} - MinLevel:{q.minDungeonLevelForItemDrop} - Sprite:{q.itemSprite.name} - Count:{q.countItems}");
+                var active = ActiveQuest;
+                Plugin.BepinLogger.LogWarning($"Using available activequest: {active.title.GetLocalizedString()}");
+                return active;
             }
+            Plugin.BepinLogger.LogWarning($"No available activequest");
             return orig(self);
         }
     }
