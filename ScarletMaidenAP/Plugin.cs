@@ -4,6 +4,7 @@ using ScarletMaidenAP.Archipelago;
 using ScarletMaidenAP.Managers;
 using ScarletMaidenAP.Utils;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 namespace ScarletMaidenAP
 {
@@ -22,6 +23,7 @@ namespace ScarletMaidenAP
         public static NPCModManager NPCManagerInstance;
         public static ScarletModManager ScarletManagerInstance;
         public static GalleryModManager GalleryManagerInstance;
+        public static QuestModManager QuestManagerInstance;
 
         public static APSaveManager APSaveManagerInstance;
 
@@ -32,11 +34,19 @@ namespace ScarletMaidenAP
             ArchipelagoClient = new ArchipelagoClient();
             ArchipelagoConsole.Awake();
 
+            // Add archipelago strings
+            var table = LocalizationSettings.StringDatabase.GetTable("StringTable");
+            table.AddEntry("Archipelago", "Archipelago");
+            table.AddEntry("FinalBossGoal", "Find your items scattered across the multiworld and defeat the Corrupted Maiden!");
+            table.AddEntry("AllBossGoal", "Find your items scattered across the multiworld and defeat all five bosses!");
+            table.AddEntry("AllQuestGoal", "Find your items scattered across the multiworld and help Misty with all of her quests!");
+
             ArchipelagoConsole.LogMessage($"{ModDisplayInfo} loaded!");
 
             NPCManagerInstance = new NPCModManager();
             ScarletManagerInstance = new ScarletModManager();
             GalleryManagerInstance = new GalleryModManager();
+            QuestManagerInstance = new QuestModManager();
 
             APSaveManagerInstance = new APSaveManager();
 

@@ -47,27 +47,33 @@
 
     <ItemGroup>
       <Reference Include="Assembly-CSharp">
-        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\BepInEx\Assembly-CSharp.dll</HintPath>
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\BepInEx\Assembly-CSharp.dll</HintPath>
         <Private>False</Private>
       </Reference>
       <Reference Include="MMHOOK_Assembly-CSharp">
-        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\BepInEx\plugins\MMHOOK\MMHOOK_Assembly-CSharp.dll</HintPath>
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\BepInEx\plugins\MMHOOK\MMHOOK_Assembly-CSharp.dll</HintPath>
         <Private>False</Private>
       </Reference>
       <Reference Include="Rewired_Core">
-        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Rewired_Core.dll</HintPath>
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Rewired_Core.dll</HintPath>
         <Private>False</Private>
       </Reference>
       <Reference Include="Rewired_Windows">
-        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Rewired_Windows.dll</HintPath>
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Rewired_Windows.dll</HintPath>
         <Private>False</Private>
       </Reference>
       <Reference Include="Unity.Localization">
-        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Unity.Localization.dll</HintPath>
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Unity.Localization.dll</HintPath>
         <Private>False</Private>
       </Reference>
+      <Reference Include="Unity.ResourceManager">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Unity.ResourceManager.dll</HintPath>
+      </Reference>
+      <Reference Include="Unity.TextMeshPro">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      </Reference>
       <Reference Include="UnityEngine.UI">
-        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\UnityEngine.UI.dll</HintPath>
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Scarlet Maiden\ScarletMaiden_Data\Managed\UnityEngine.UI.dll</HintPath>
         <Private>False</Private>
       </Reference>
     </ItemGroup>
