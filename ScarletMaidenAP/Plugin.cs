@@ -25,6 +25,7 @@ namespace ScarletMaidenAP
         public static GalleryModManager GalleryManagerInstance;
         public static QuestModManager QuestManagerInstance;
         public static SkillManager SkillManagerInstance;
+        public static APDungeonManager DungeonManagerInstance;
 
         public static APSaveManager APSaveManagerInstance;
 
@@ -49,6 +50,7 @@ namespace ScarletMaidenAP
             GalleryManagerInstance = new GalleryModManager();
             QuestManagerInstance = new QuestModManager();
             SkillManagerInstance = new SkillManager();
+            DungeonManagerInstance = new APDungeonManager();
 
             APSaveManagerInstance = new APSaveManager();
         }
