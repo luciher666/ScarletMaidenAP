@@ -28,11 +28,17 @@ namespace ScarletMaidenAP.Managers
             On.LewdDungeonMenu.OnOptionConfirmed += LewdDungeonMenu_OnOptionConfirmed;
         }
 
+        /// <summary>
+        /// Disable quest start script.
+        /// </summary>
         private void Misty_StartQuest(On.Misty.orig_StartQuest orig, Misty self, string questID)
         {
             // Do nothing. Quests don't need to be started, all are always active
         }
 
+        /// <summary>
+        /// Show the dungeon menu again after a quest explanation ends
+        /// </summary>
         private void Misty_OnDialogExhausted(On.Misty.orig_OnDialogExhausted orig, Misty self)
         {
             if (SavedIndex != null)

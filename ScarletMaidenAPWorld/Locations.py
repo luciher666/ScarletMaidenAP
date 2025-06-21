@@ -325,8 +325,8 @@ location_table: Dict[str, ScarletMaidenLocationData] = {
     "Questsanity: Green Delight":       ScarletMaidenLocation("Questsanity", 40_4_000),
     **{f"Leather Strap {i}":            ScarletMaidenLocationData("Questsanity - Items", 40_5_000 + i, [RegionNames.Library, RegionNames.Forest, RegionNames.Frozen, RegionNames.Sanctum]) for i in range(1, 51)},
     "Questsanity: It's a Strap!":       ScarletMaidenLocation("Questsanity", 40_5_000),
-    **{f"Golden Nugget {i}":            ScarletMaidenLocationData("Questsanity - Items", 40_6_000 + i, [RegionNames.Library, RegionNames.Forest, RegionNames.Frozen, RegionNames.Sanctum]) for i in range(1, 51)},
+    **{f"Golden Nugget {i}":            ScarletMaidenLocationData("Questsanity - Items", 40_6_000 + i, [RegionNames.Forest, RegionNames.Frozen, RegionNames.Sanctum]) for i in range(1, 51)},
     "Questsanity: Gold Digger":         ScarletMaidenLocation("Questsanity", 40_6_000),
-    **{f"Void Crystal {i}":             ScarletMaidenLocationData("Questsanity - Items", 40_7_000 + i, [RegionNames.Library, RegionNames.Forest, RegionNames.Frozen, RegionNames.Sanctum]) for i in range(1, 51)},
+    **{f"Void Crystal {i}":             ScarletMaidenLocationData("Questsanity - Items", 40_7_000 + i, [RegionNames.Frozen, RegionNames.Sanctum]) for i in range(1, 51)},
     "Questsanity: Portal of Pleasure":  ScarletMaidenLocation("Questsanity", 40_7_000),
 }
