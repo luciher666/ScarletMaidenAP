@@ -24,6 +24,7 @@ namespace ScarletMaidenAP
         public static ScarletModManager ScarletManagerInstance;
         public static GalleryModManager GalleryManagerInstance;
         public static QuestModManager QuestManagerInstance;
+        public static SkillManager SkillManagerInstance;
 
         public static APSaveManager APSaveManagerInstance;
 
@@ -47,15 +48,9 @@ namespace ScarletMaidenAP
             ScarletManagerInstance = new ScarletModManager();
             GalleryManagerInstance = new GalleryModManager();
             QuestManagerInstance = new QuestModManager();
+            SkillManagerInstance = new SkillManager();
 
             APSaveManagerInstance = new APSaveManager();
-
-            On.SaveSlot.Save += SaveSlot_Save;
-        }
-
-        private void SaveSlot_Save(On.SaveSlot.orig_Save orig, SaveSlot self)
-        {
-            BepinLogger.LogMessage("Save intercepted");
         }
 
         private void OnGUI()

@@ -17,13 +17,57 @@ namespace ScarletMaidenAP.Managers
             On.QuestManager.GetActiveQuestState += QuestManager_GetActiveQuestState;
             On.QuestManager.GetIsQuestItemAvailable += QuestManager_GetIsQuestItemAvailable;
             On.PauseMenuTabJournal.SetUpQuests += PauseMenuTabJournal_SetUpQuests;
+            On.Misty.Start += Misty_Start;
             On.Misty.OnInteract += Misty_OnInteract;
             On.Misty.OnSelection1Selected += Misty_OnSelection1Selected;
             On.Misty.Reset += Misty_Reset;
+            On.Misty.OnDialogExhausted += Misty_OnDialogExhausted;
+            On.Misty.TestShouldShowAttentionIndicator += Misty_TestShouldShowAttentionIndicator;
+            On.Misty.StartQuest += Misty_StartQuest;
             On.LewdDungeonMenu.UpdateOptions += LewdDungeonMenu_UpdateOptions;
             On.LewdDungeonMenu.OnOptionConfirmed += LewdDungeonMenu_OnOptionConfirmed;
         }
 
+        private void Misty_StartQuest(On.Misty.orig_StartQuest orig, Misty self, string questID)
+        {
+            // Do nothing. Quests don't need to be started, all are always active
+        }
+
+        private void Misty_OnDialogExhausted(On.Misty.orig_OnDialogExhausted orig, Misty self)
+        {
+            if (SavedIndex != null)
+            {
+                self.OpenLewdDungeonMenu();
+            }
+        }
+
+        /// <summary>
+        /// Abridge Misty's quest dialogs
+        /// </summary>
+        private void Misty_Start(On.Misty.orig_Start orig, Misty self)
+        {
+            orig(self);
+            // Abridge quest dialogs to show relevant info and remove reference to prior quests or specific world state
+            self.dialogs[0].lines = self.dialogs[0].lines.Skip(14).Take(7).ToArray();
+            self.dialogs[7].lines = self.dialogs[7].lines.Skip(2).ToArray();
+            self.dialogs[8].lines = self.dialogs[8].lines.Skip(3).ToArray();
+            self.dialogs[9].lines = self.dialogs[9].lines.Skip(4).ToArray();
+            self.dialogs[10].lines = self.dialogs[10].lines.Skip(4).ToArray();
+        }
+
+        /// <summary>
+        /// TODO: Check if any quest is ready to be completed
+        /// 
+        /// Change when exclamation point appears above Misty's head
+        /// </summary>
+        private bool Misty_TestShouldShowAttentionIndicator(On.Misty.orig_TestShouldShowAttentionIndicator orig, Misty self)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Remove the saved index for quest selection on exiting dialog.
+        /// </summary>
         private void Misty_Reset(On.Misty.orig_Reset orig, Misty self)
         {
             SavedIndex = null;
@@ -31,7 +75,7 @@ namespace ScarletMaidenAP.Managers
         }
 
         /// <summary>
-        /// Always open the menu, since all quests are always active
+        /// Always open the menu, since all quests are always active.
         /// </summary>
         private void Misty_OnSelection1Selected(On.Misty.orig_OnSelection1Selected orig, Misty self)
         {
@@ -60,6 +104,9 @@ namespace ScarletMaidenAP.Managers
             self.SetOptionSelected(SavedIndex ?? 0);
         }
 
+        /// <summary>
+        /// Activate Misty's not enough items dialog when not enough items are obtained.
+        /// </summary>
         private void LewdDungeonMenu_OnOptionConfirmed(On.LewdDungeonMenu.orig_OnOptionConfirmed orig, LewdDungeonMenu self)
         {
             if (self.pointerIndex == self.options.Count - 1)
@@ -72,12 +119,17 @@ namespace ScarletMaidenAP.Managers
                 // TODO: Conditional on if you've obtained enough quest items
                 SavedIndex = self.pointerIndex;
                 self.gameObject.SetActive(false);
-                self.misty.activeDialog = self.misty.GetDialogWithID("quest_in_progress");
+                self.misty.activeDialog = self.misty.GetDialogWithID(self.quests[self.pointerIndex].mistyDialogID);
                 self.misty.hud.npcDialog.ShowDialog(self.misty, self.misty.activeDialog, self.misty.OnDialogCallback);
                 //self.misty.EnterLewdDungeon(self.quests[self.pointerIndex].lewdDungeonSceneName);
             }
         }
 
+        /// <summary>
+        /// TODO: When a quest is ready to complete, send to dungeon automatically
+        /// 
+        /// Only one path through Misty's dialog now, to allow all quests at once.
+        /// </summary>
         private void Misty_OnInteract(On.Misty.orig_OnInteract orig, Misty self)
         {
             if (self.isScarletInDialogPosition)
@@ -91,6 +143,9 @@ namespace ScarletMaidenAP.Managers
                 self.MoveScarletToDialogPosition((Action)self.OnInteract);
         }
 
+        /// <summary>
+        /// Get specific active quest if it's been rolled
+        /// </summary>
         private QuestState QuestManager_GetActiveQuestState(On.QuestManager.orig_GetActiveQuestState orig, QuestManager self)
         {
             return ActiveQuest == null
@@ -109,22 +164,27 @@ namespace ScarletMaidenAP.Managers
             self.activeQuestItem.gameObject.SetActive(true);
             self.activeQuestItem.SetUpAsQuestItem(new QuestState
             {
-                questID = "FinalBossGoal",
-                countItemsCollected = 0,
+                questID = "FinalBossGoal", // TODO: Get goal string from multiworld
+                countItemsCollected = 0, // TODO: Check goal state from multiworld
                 isCompleted = false,
             });
             self.activeQuestItem.text.text = "Archipelago";
             self.listItems.Add(self.activeQuestItem);
-            // TODO: Add all vanilla quests to the archive, tracking progress from multiworld
-
-            //foreach (QuestState completedQuestState in GameManager.instance.GetSaveSlot().gameState.journalState)
-            //{
-            //    Quest quest = completedQuestState.GetQuest();
-            //    JournalListItem journalListItem = Object.Instantiate<JournalListItem>(self.storyItemPrefab, (Vector3)Vector2.zero, Quaternion.identity, (Transform)self.storiesContainer);
-            //    journalListItem.text.text = quest.title.GetLocalizedString();
-            //    journalListItem.SetUpAsQuestItem(completedQuestState);
-            //    self.listItems.Add(journalListItem);
-            //}
+            foreach (var quest in QuestManager.instance.quests.Where(q =>
+                         !q.title.GetLocalizedString().Equals("Archipelago")))
+            {
+                var itemsCollected = 0; // TODO: Get from multiworld
+                var questState = new QuestState
+                {
+                    countItemsCollected = 0,
+                    questID = quest.id,
+                    isCompleted = false, // Doesn't matter
+                };
+                var journalListItem = Object.Instantiate(self.storyItemPrefab, Vector2.zero, Quaternion.identity, self.storiesContainer);
+                journalListItem.text.text = quest.title.GetLocalizedString();
+                journalListItem.SetUpAsQuestItem(questState);
+                self.listItems.Add(journalListItem);
+            }
         }
 
         private bool QuestManager_GetIsQuestItemAvailable(On.QuestManager.orig_GetIsQuestItemAvailable orig, QuestManager self)
@@ -156,10 +216,10 @@ namespace ScarletMaidenAP.Managers
             if (ActiveQuest != null)
             {
                 var active = ActiveQuest;
-                Plugin.BepinLogger.LogWarning($"Using available activequest: {active.title.GetLocalizedString()}");
+                Plugin.BepinLogger.LogWarning($"Using previously rolled active quest: {active.title.GetLocalizedString()}");
                 return active;
             }
-            Plugin.BepinLogger.LogWarning($"No available activequest");
+            Plugin.BepinLogger.LogError("No available active quest");
             return orig(self);
         }
     }
