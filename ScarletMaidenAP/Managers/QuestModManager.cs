@@ -175,6 +175,7 @@ namespace ScarletMaidenAP.Managers
                 isCompleted = false,
             });
             self.activeQuestItem.text.text = "Archipelago";
+            self.activeQuestState = self.activeQuestItem.questState;
             self.listItems.Add(self.activeQuestItem);
             foreach (var quest in QuestManager.instance.quests.Where(q =>
                          !q.title.GetLocalizedString().Equals("Archipelago")))
